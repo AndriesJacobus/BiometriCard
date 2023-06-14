@@ -180,7 +180,9 @@ class NewCardState extends State<NewCard> {
   void _onValidate() {
     if (formKey.currentState!.validate()) {
       print('valid!');
-      // Get country
+
+      // Get more details using card numbers at
+      // https://github.com/binlist/data/blob/master/ranges.csv
     } else {
       print('invalid!');
     }
