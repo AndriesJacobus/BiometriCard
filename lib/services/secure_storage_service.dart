@@ -9,7 +9,6 @@ mixin SecureStorageService<T extends StatefulWidget> on State<T> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     // Create storage
@@ -42,11 +41,20 @@ mixin SecureStorageService<T extends StatefulWidget> on State<T> {
     // await storage.write(key: key, value: value);
   }
 
+  Future<void> saveAndStoreCard() async {
+    // Puts card in memory
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-
-    // Sync up secure storage and unload cache
   }
 }
+
+// Usage:
+// final FlutterSecureStorage storage = FlutterSecureStorage();
+
+// await storage.write(key: key, value: MyUserModel.serialize(model));
+
+// MyUserModel model = MyUserModel.deserialize(await storage.read(key: key));

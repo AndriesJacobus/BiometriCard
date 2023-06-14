@@ -14,6 +14,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
       backgroundColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -37,10 +39,40 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You currently have no saved cards.',
-              style: TextStyle(
-                color: AppColors.persianGreen,
+            const Padding(
+              padding: EdgeInsets.only(
+                left: 50,
+                right: 50,
+              ),
+              child: Text(
+                'You currently have no saved cards.\nAdd a Secure Card to get started!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.persianGreen,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: showAddBottomSheet,
+              child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                decoration: BoxDecoration(
+                  color: AppColors.lightGreen,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                width: double.infinity,
+                alignment: Alignment.center,
+                child: const Text(
+                  'Add Secure Card',
+                  style: TextStyle(
+                    color: AppColors.persianBlue,
+                    fontFamily: 'halter',
+                    fontSize: 14,
+                    package: 'flutter_credit_card',
+                  ),
+                ),
               ),
             ),
           ],

@@ -4,6 +4,8 @@ import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 
 class NewCard extends StatefulWidget {
+  const NewCard({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return NewCardState();
@@ -35,19 +37,78 @@ class NewCardState extends State<NewCard> {
     super.initState();
   }
 
+  void closePopup() {
+    Navigator.pop(context);
+  }
+
+  Future<void> showConfirmPopup() {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Center(child: Text("Are you sure?")),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text("Are you sure you want to discard this new Secure Card?"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+            TextButton(
+              child: const Text(
+                "Discard",
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                closePopup();
+                closePopup();
+              },
+            ),
+          ],
+          actionsAlignment: MainAxisAlignment.spaceEvenly,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(16.0),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        decoration: const BoxDecoration(
-          color: Color.fromRGBO(128, 199, 97, 0.5),
-        ),
+        // decoration: const BoxDecoration(
+        //   color: Color.fromRGBO(128, 199, 97, 0.1),
+        // ),
         child: SafeArea(
           child: Column(
             children: <Widget>[
               const SizedBox(
-                height: 10,
+                height: 20,
+              ),
+              const Text(
+                "Add a new Secure Card",
+                style: TextStyle(
+                  color: AppColors.persianBlue,
+                  fontFamily: 'halter',
+                  fontSize: 16,
+                  package: 'flutter_credit_card',
+                ),
               ),
               CreditCardWidget(
                 glassmorphismConfig:
@@ -58,10 +119,10 @@ class NewCardState extends State<NewCard> {
                 cvvCode: cvvCode,
                 bankName: bankName,
                 frontCardBorder: !useGlassMorphism
-                    ? Border.all(color: Colors.yellowAccent)
+                    ? Border.all(color: AppColors.lightGreen)
                     : null,
                 backCardBorder: !useGlassMorphism
-                    ? Border.all(color: Colors.yellowAccent)
+                    ? Border.all(color: AppColors.lightGreen)
                     : null,
                 showBackView: isCvvFocused,
                 obscureCardNumber: true,
@@ -94,7 +155,7 @@ class NewCardState extends State<NewCard> {
                           hintStyle:
                               const TextStyle(color: AppColors.persianGreen),
                           labelStyle:
-                              const TextStyle(color: AppColors.persianGreen),
+                              const TextStyle(color: AppColors.persianBlue),
                           focusedBorder: border,
                           enabledBorder: border,
                         ),
@@ -102,7 +163,7 @@ class NewCardState extends State<NewCard> {
                           hintStyle:
                               const TextStyle(color: AppColors.persianGreen),
                           labelStyle:
-                              const TextStyle(color: AppColors.persianGreen),
+                              const TextStyle(color: AppColors.persianBlue),
                           focusedBorder: border,
                           enabledBorder: border,
                           labelText: 'Expired Date',
@@ -112,7 +173,7 @@ class NewCardState extends State<NewCard> {
                           hintStyle:
                               const TextStyle(color: AppColors.persianGreen),
                           labelStyle:
-                              const TextStyle(color: AppColors.persianGreen),
+                              const TextStyle(color: AppColors.persianBlue),
                           focusedBorder: border,
                           enabledBorder: border,
                           labelText: 'CVV',
@@ -122,7 +183,7 @@ class NewCardState extends State<NewCard> {
                           hintStyle:
                               const TextStyle(color: AppColors.persianGreen),
                           labelStyle:
-                              const TextStyle(color: AppColors.persianGreen),
+                              const TextStyle(color: AppColors.persianBlue),
                           focusedBorder: border,
                           enabledBorder: border,
                           labelText: 'Card Holder',
@@ -138,25 +199,37 @@ class NewCardState extends State<NewCard> {
                           margin: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: <Color>[
-                                AppColors.persianBlue,
-                                AppColors.mint,
-                                AppColors.lightGreen,
-                                AppColors.lightGreen,
-                                AppColors.mint,
-                                AppColors.persianBlue,
-                              ],
-                              begin: Alignment(-1, -4),
-                              end: Alignment(1, 4),
-                            ),
+                            color: AppColors.lightGreen,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           width: double.infinity,
                           alignment: Alignment.center,
                           child: const Text(
-                            'Validate',
+                            'Save',
+                            style: TextStyle(
+                              color: AppColors.persianBlue,
+                              fontFamily: 'halter',
+                              fontSize: 14,
+                              package: 'flutter_credit_card',
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: showConfirmPopup,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.red[300],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'Discard',
                             style: TextStyle(
                               color: AppColors.persianBlue,
                               fontFamily: 'halter',
