@@ -1,60 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:biometricard/models/secure_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:uuid/uuid.dart';
 
-mixin SecureStorageService<T extends StatefulWidget> on State<T> {
-  // Save local cards in state from secure storage
+class SecureStorageService {
+  // Save local cards in state (memory) from secure storage
   // Sync up between secure storage and local state
   FlutterSecureStorage? storage;
-  Map<String, String>? cachedStoredCards;
+  List<SecureCard> cachedStoredCards = [];
+  Uuid uuid = const Uuid();
 
-  @override
-  void initState() {
-    super.initState();
+  Future init() async {
+    debugPrint("Here in SecureStorageService init...");
 
     // Create storage
     storage = const FlutterSecureStorage();
 
     // Load stored cards form secure storage into cache
-    loadStoredCards();
+    _loadStoredCards();
   }
 
-  Future<void> loadStoredCards() async {
+  Future<void> _loadStoredCards() async {
     Map<String, String>? allStoredCards = await storage?.readAll();
 
-    setState(() {
-      cachedStoredCards = allStoredCards;
+    // Go through allStoredCards and deserialise into list of SecureCards
+    allStoredCards?.forEach((key, value) {
+      // Make sure this is a stored card
+      if (key.substring(0, 5) == "scard") {
+        debugPrint("Adding a card to memory...");
+        cachedStoredCards.add(SecureCard.deserialize(value));
+      }
     });
-
-    // // Read value
-    // String value = await storage.read(key: key);
-
-    // // Read all values
-    // Map<String, String> allValues = await storage.readAll();
-
-    // // Delete value
-    // await storage.delete(key: key);
-
-    // // Delete all
-    // await storage.deleteAll();
-
-    // // Write value
-    // await storage.write(key: key, value: value);
   }
 
-  Future<void> saveAndStoreCard() async {
-    // Puts card in memory
+  Future<void> saveAndStoreCard(SecureCard card) async {
+    // First make sure the card doesn't exist already
+    // TODO
+
+    // Add a card to memory
+    cachedStoredCards.add(card);
+
+    // Store card in secure storage
+    await storage?.write(
+      key: "scard${uuid.v4().replaceAll("-", "")}",
+      value: SecureCard.serialize(card),
+    );
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
+  Future<void> removeAllCards(SecureCard card) async {
+    await storage?.deleteAll();
   }
 }
-
-// Usage:
-// final FlutterSecureStorage storage = FlutterSecureStorage();
-
-// await storage.write(key: key, value: MyUserModel.serialize(model));
-
-// MyUserModel model = MyUserModel.deserialize(await storage.read(key: key));

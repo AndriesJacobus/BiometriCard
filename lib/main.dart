@@ -1,8 +1,12 @@
+import 'package:biometricard/services/service_driver.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/screens/home.dart';
-import 'package:biometricard/screens/new_card.dart';
 
-void main() {
+void main() async {
+  // Start app services
+  await setupServices();
+
+  // Start app
   runApp(const MyApp());
 }
 

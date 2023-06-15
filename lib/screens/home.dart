@@ -1,6 +1,7 @@
-import 'package:biometricard/common/colors.dart';
-import 'package:biometricard/screens/new_card.dart';
 import 'package:flutter/material.dart';
+import 'package:biometricard/common/colors.dart';
+import 'package:biometricard/mixins/secure_storage_mixin.dart';
+import 'package:biometricard/screens/new_card.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -9,7 +10,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SecureStorage<MyHomePage> {
   Future<void> showAddBottomSheet() async {
     return await showModalBottomSheet(
       context: context,
@@ -45,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 right: 50,
               ),
               child: Text(
-                'You currently have no saved cards.\nAdd a Secure Card to get started!',
+                'You currently have no saved Cards.\nAdd a Secure Card to get started!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.persianGreen,
@@ -80,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: showAddBottomSheet,
-        tooltip: 'Increment',
+        tooltip: 'Add Card',
         backgroundColor: AppColors.persianGreen,
         child: const Icon(Icons.add_card),
       ),

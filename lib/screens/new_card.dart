@@ -1,5 +1,6 @@
-import 'package:biometricard/common/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:biometricard/common/colors.dart';
+import 'package:biometricard/mixins/secure_storage_mixin.dart';
 import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 
@@ -12,7 +13,7 @@ class NewCard extends StatefulWidget {
   }
 }
 
-class NewCardState extends State<NewCard> {
+class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
   String cardNumber = '';
   String expiryDate = '';
   String cardHolderName = '';

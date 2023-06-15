@@ -37,9 +37,16 @@ class SecureCard {
         'country': model.country ?? "N/A",
       };
 
-  static String serialize(SecureCard model) =>
-      json.encode(SecureCard.toMap(model));
+  static String serialize(SecureCard card) =>
+      json.encode(SecureCard.toMap(card));
 
   static SecureCard deserialize(String json) =>
       SecureCard.fromJson(jsonDecode(json));
 }
+
+// Usage:
+// final FlutterSecureStorage storage = FlutterSecureStorage();
+
+// await storage.write(key: key, value: MyUserModel.serialize(model));
+
+// MyUserModel model = MyUserModel.deserialize(await storage.read(key: key));
