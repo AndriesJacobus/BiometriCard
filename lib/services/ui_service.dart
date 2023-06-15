@@ -13,6 +13,7 @@ class UiService {
     bool showCancel = true,
     bool popTwice = true,
     Color confirmColor = Colors.red,
+    Function? callback,
   }) {
     return showDialog<void>(
       context: context,
@@ -44,6 +45,10 @@ class UiService {
                 style: TextStyle(color: confirmColor),
               ),
               onPressed: () {
+                if (callback != null) {
+                  callback();
+                }
+
                 closePopup(context);
                 if (popTwice) {
                   closePopup(context);

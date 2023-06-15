@@ -51,7 +51,8 @@ class SecureStorageService {
     return true;
   }
 
-  Future<void> removeAllCards(SecureCard card) async {
+  Future<void> removeAllCards() async {
+    cachedStoredCards = [];
     await storage?.deleteAll();
   }
 

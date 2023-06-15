@@ -48,7 +48,9 @@ class _MyHomePageState extends State<MyHomePage>
       },
     );
 
-    setState(() {});
+    setState(() {
+      hasCards = secureStorage.cachedStoredCards.isNotEmpty;
+    });
   }
 
   Column renderCards() {
@@ -109,12 +111,33 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
+  void deleteAllCards() async {
+    await uiService.showConfirmPopup(
+      context,
+      "Delete all Cards Permanently?",
+      "Are you sure you want to delete all your Secure Cards? This cannot be undone.",
+      "Delete Cards",
+      popTwice: false,
+      callback: () => {secureStorage.removeAllCards()},
+    );
+
+    setState(() {
+      hasCards = secureStorage.cachedStoredCards.isNotEmpty;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: AppColors.persianGreen,
+        actions: [
+          IconButton(
+            onPressed: deleteAllCards,
+            icon: const Icon(Icons.delete_rounded),
+          ),
+        ],
       ),
       body: Container(
         height: MediaQuery.of(context).size.height * 0.9,
