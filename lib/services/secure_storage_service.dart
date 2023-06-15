@@ -17,7 +17,7 @@ class SecureStorageService {
     storage = const FlutterSecureStorage();
 
     // Load stored cards form secure storage into cache
-    _loadStoredCards();
+    await _loadStoredCards();
   }
 
   Future<void> _loadStoredCards() async {

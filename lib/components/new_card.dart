@@ -1,7 +1,5 @@
-import 'package:biometricard/models/secure_card.dart';
-import 'package:biometricard/services/secure_storage_service.dart';
-import 'package:biometricard/services/ui_service.dart';
 import 'package:flutter/material.dart';
+import 'package:biometricard/models/secure_card.dart';
 import 'package:biometricard/common/colors.dart';
 import 'package:biometricard/mixins/secure_storage_mixin.dart';
 import 'package:flutter_credit_card/credit_card_brand.dart';
@@ -32,13 +30,13 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
 
   @override
   void initState() {
+    super.initState();
     border = OutlineInputBorder(
       borderSide: BorderSide(
         color: AppColors.persianBlue.withOpacity(0.7),
         width: 2.0,
       ),
     );
-    super.initState();
   }
 
   void onCreditCardModelChange(CreditCardModel? creditCardModel) {
@@ -57,7 +55,8 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
       context,
       "Secure Card saved Successfully",
       "Your new Secure Card has been successfully saved, and stored securely!",
-      "Thanks",
+      "View Secure Cards",
+      showCancel: false,
       popTwice: true,
       confirmColor: AppColors.persianGreen,
     );
@@ -67,8 +66,8 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
     // Show popup
     uiService.showConfirmPopup(
       context,
-      "Error saving new card",
-      "There was an error saving your new card: Card already exists. Please review your details and try again.",
+      "Secure Card already Exists",
+      "There was an error saving your new card: Secure Card already exists.\n\nPlease review your details and try again.",
       "Try again",
       popTwice: false,
       confirmColor: Colors.black,

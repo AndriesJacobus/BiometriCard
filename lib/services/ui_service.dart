@@ -10,6 +10,7 @@ class UiService {
     String title,
     String content,
     String confirmMessage, {
+    bool showCancel = true,
     bool popTwice = true,
     Color confirmColor = Colors.red,
   }) {
@@ -27,15 +28,16 @@ class UiService {
             ),
           ),
           actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.black),
+            if (showCancel)
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
-            ),
             TextButton(
               child: Text(
                 confirmMessage,

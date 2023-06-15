@@ -22,7 +22,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const MyHomePage(),
+      home: MyHomePage(
+        title: "My Secure Cards",
+      ),
     );
   }
 }
