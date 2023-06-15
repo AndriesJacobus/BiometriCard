@@ -1,8 +1,9 @@
-import 'package:biometricard/services/secure_storage_service.dart';
 import 'package:flutter/material.dart';
-
-import '../services/service_driver.dart';
+import 'package:biometricard/services/secure_storage_service.dart';
+import 'package:biometricard/services/ui_service.dart';
+import 'package:biometricard/services/service_driver.dart';
 
 mixin SecureStorage<T extends StatefulWidget> on State<T> {
-  var api = getIt<SecureStorageService>();
+  SecureStorageService secureStorage = getIt<SecureStorageService>();
+  UiService uiService = getIt<UiService>();
 }

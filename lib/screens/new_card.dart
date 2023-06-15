@@ -1,3 +1,6 @@
+import 'package:biometricard/models/secure_card.dart';
+import 'package:biometricard/services/secure_storage_service.dart';
+import 'package:biometricard/services/ui_service.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/common/colors.dart';
 import 'package:biometricard/mixins/secure_storage_mixin.dart';
@@ -38,54 +41,66 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
     super.initState();
   }
 
-  void closePopup() {
-    Navigator.pop(context);
+  void onCreditCardModelChange(CreditCardModel? creditCardModel) {
+    setState(() {
+      cardNumber = creditCardModel!.cardNumber;
+      expiryDate = creditCardModel.expiryDate;
+      cardHolderName = creditCardModel.cardHolderName;
+      cvvCode = creditCardModel.cvvCode;
+      isCvvFocused = creditCardModel.isCvvFocused;
+    });
   }
 
-  Future<void> showConfirmPopup() {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Center(child: Text("Are you sure?")),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text("Are you sure you want to discard this new Secure Card?"),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-            TextButton(
-              child: const Text(
-                "Discard",
-                style: TextStyle(color: Colors.red),
-              ),
-              onPressed: () {
-                closePopup();
-                closePopup();
-              },
-            ),
-          ],
-          actionsAlignment: MainAxisAlignment.spaceEvenly,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(16.0),
-            ),
-          ),
-        );
-      },
+  void showSuccessPopup() {
+    // Show popup
+    uiService.showConfirmPopup(
+      context,
+      "Secure Card saved Successfully",
+      "Your new Secure Card has been successfully saved, and stored securely!",
+      "Thanks",
+      popTwice: true,
+      confirmColor: AppColors.persianGreen,
     );
+  }
+
+  void showCardFailurePopup() {
+    // Show popup
+    uiService.showConfirmPopup(
+      context,
+      "Error saving new card",
+      "There was an error saving your new card: Card already exists. Please review your details and try again.",
+      "Try again",
+      popTwice: false,
+      confirmColor: Colors.black,
+    );
+  }
+
+  void _onValidate() async {
+    if (formKey.currentState!.validate()) {
+      debugPrint('Card valid!');
+
+      // Get more details using card numbers at
+      // https://github.com/binlist/data/blob/master/ranges.csv
+
+      // Save card to secure storage
+      bool saveSuccess = await secureStorage.saveAndStoreCard(
+        SecureCard(
+          number: cardNumber,
+          date: expiryDate,
+          cVV: cvvCode,
+          holder: cardHolderName,
+          type: "",
+        ),
+      );
+
+      if (saveSuccess) {
+        showSuccessPopup();
+      } else {
+        showCardFailurePopup();
+      }
+    } else {
+      debugPrint('Card invalid!');
+    }
   }
 
   @override
@@ -218,7 +233,13 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: showConfirmPopup,
+                        onTap: () async => uiService.showConfirmPopup(
+                          context,
+                          "Are you sure?",
+                          "Are you sure you want to discard this new Secure Card?",
+                          "Discard",
+                          popTwice: true,
+                        ),
                         child: Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
@@ -249,26 +270,5 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
         ),
       ),
     );
-  }
-
-  void _onValidate() {
-    if (formKey.currentState!.validate()) {
-      print('valid!');
-
-      // Get more details using card numbers at
-      // https://github.com/binlist/data/blob/master/ranges.csv
-    } else {
-      print('invalid!');
-    }
-  }
-
-  void onCreditCardModelChange(CreditCardModel? creditCardModel) {
-    setState(() {
-      cardNumber = creditCardModel!.cardNumber;
-      expiryDate = creditCardModel.expiryDate;
-      cardHolderName = creditCardModel.cardHolderName;
-      cvvCode = creditCardModel.cvvCode;
-      isCvvFocused = creditCardModel.isCvvFocused;
-    });
   }
 }
