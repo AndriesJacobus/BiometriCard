@@ -1,3 +1,4 @@
+import 'package:biometricard/models/secure_card.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/components/card_view.dart';
 import 'package:biometricard/common/colors.dart';
@@ -53,11 +54,11 @@ class _MyHomePageState extends State<MyHomePage>
   Column renderCards() {
     List<CardView> cards = [];
 
-    secureStorage.cachedStoredCards.forEach((element) {
+    for (SecureCard card in secureStorage.cachedStoredCards) {
       cards.add(
-        const CardView(),
+        CardView(card: card),
       );
-    });
+    }
 
     return Column(
       children: [

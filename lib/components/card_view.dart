@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:biometricard/mixins/secure_storage_mixin.dart';
+import 'package:biometricard/models/secure_card.dart';
 
 class CardView extends StatefulWidget {
-  const CardView({super.key});
+  SecureCard card;
+  CardView({super.key, required this.card});
 
   @override
   State<StatefulWidget> createState() {
