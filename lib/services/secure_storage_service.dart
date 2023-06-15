@@ -33,9 +33,12 @@ class SecureStorageService {
     });
   }
 
-  Future<void> saveAndStoreCard(SecureCard card) async {
+  Future<bool> saveAndStoreCard(SecureCard card) async {
     // First make sure the card doesn't exist already
-    // TODO
+    if (cardExists(card)) {
+      debugPrint("Card already exists");
+      return false;
+    }
 
     // Add a card to memory
     cachedStoredCards.add(card);
@@ -45,9 +48,16 @@ class SecureStorageService {
       key: "scard${uuid.v4().replaceAll("-", "")}",
       value: SecureCard.serialize(card),
     );
+    return true;
   }
 
   Future<void> removeAllCards(SecureCard card) async {
     await storage?.deleteAll();
+  }
+
+  bool cardExists(SecureCard card) {
+    return cachedStoredCards.any(
+      (existingCard) => existingCard.number == card.number,
+    );
   }
 }

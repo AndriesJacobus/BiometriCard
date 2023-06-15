@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage>
       builder: (BuildContext context) {
         return SizedBox(
           height: MediaQuery.of(context).size.height * 0.9,
-          child: NewCard(),
+          child: const NewCard(),
         );
       },
     );

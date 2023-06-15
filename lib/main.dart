@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:biometricard/screens/home.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // Start app services
   await setupServices();
 
