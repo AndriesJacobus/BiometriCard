@@ -53,7 +53,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
     // Show popup
     uiService.showConfirmPopup(
       context,
-      "Secure Card saved Successfully",
+      "Secure Card saved successfully",
       "Your new Secure Card has been successfully saved, and stored securely!",
       "View Secure Cards",
       showCancel: false,
@@ -66,7 +66,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
     // Show popup
     uiService.showConfirmPopup(
       context,
-      "Secure Card already Exists",
+      "Secure Card already exists",
       "There was an error saving your new card: Secure Card already exists.\n\nPlease review your details and try again.",
       "Try again",
       popTwice: false,

@@ -7,7 +7,7 @@ class SecureStorageService {
   // Save local cards in state (memory) from secure storage
   // Sync up between secure storage and local state
   FlutterSecureStorage? storage;
-  List<SecureCard> cachedStoredCards = [];
+  Map<String, SecureCard> cachedStoredCards = <String, SecureCard>{};
   Uuid uuid = const Uuid();
 
   Future init() async {
@@ -21,14 +21,14 @@ class SecureStorageService {
   }
 
   Future<void> _loadStoredCards() async {
-    Map<String, String>? allStoredCards = await storage?.readAll();
+    Map<String, String>? allStoredItems = await storage?.readAll();
 
     // Go through allStoredCards and deserialise into list of SecureCards
-    allStoredCards?.forEach((key, value) {
+    allStoredItems?.forEach((key, value) {
       // Make sure this is a stored card
       if (key.substring(0, 5) == "scard") {
         debugPrint("Adding a card to memory...");
-        cachedStoredCards.add(SecureCard.deserialize(value));
+        cachedStoredCards.addAll({key: SecureCard.deserialize(value)});
       }
     });
   }
@@ -41,31 +41,38 @@ class SecureStorageService {
     }
 
     // Store card in secure storage
+    String newKey = "scard${uuid.v4().replaceAll("-", "")}";
     await storage?.write(
-      key: "scard${uuid.v4().replaceAll("-", "")}",
+      key: newKey,
       value: SecureCard.serialize(card),
     );
 
     // Add the card to memory
-    cachedStoredCards.add(card);
+    cachedStoredCards.addAll({newKey: card});
 
     return true;
   }
 
   Future<void> removeAllCards() async {
-    cachedStoredCards = [];
+    // Remove from memory
+    cachedStoredCards.clear();
+
+    // Remove from storage
     await storage?.deleteAll();
   }
 
-  Future<void> removeCard(String cardNumber) async {
-    cachedStoredCards = [];
-    await storage?.deleteAll();
+  Future<void> removeCard(String cardKey) async {
+    // Remove from memory
+    cachedStoredCards.remove(cardKey);
+
+    // Remove from storage
+    await storage?.delete(key: cardKey);
   }
 
   bool cardExists(SecureCard card) {
     // Check if a card with the same number already exists
-    return cachedStoredCards.any(
-      (existingCard) => existingCard.number == card.number,
-    );
+    return cachedStoredCards.values.toList().any(
+          (existingCard) => existingCard.number == card.number,
+        );
   }
 }

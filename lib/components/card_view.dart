@@ -8,8 +8,10 @@ import 'package:uuid/uuid.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class CardView extends StatefulWidget {
-  SecureCard card;
-  CardView({super.key, required this.card});
+  final SecureCard card;
+  final Function deleteFunction;
+
+  const CardView({super.key, required this.card, required this.deleteFunction});
 
   @override
   State<StatefulWidget> createState() {
@@ -116,7 +118,7 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () async => {},
+                  onPressed: () => widget.deleteFunction(),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   child: Row(
                     children: const [

@@ -8,9 +8,9 @@ import 'package:biometricard/mixins/secure_storage_mixin.dart';
 import 'package:biometricard/components/new_card.dart';
 
 class MyHomePage extends StatefulWidget {
-  String title;
+  final String title;
 
-  MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -89,11 +89,14 @@ class _MyHomePageState extends State<MyHomePage>
   Column renderCards() {
     List<CardView> cards = [];
 
-    for (SecureCard card in secureStorage.cachedStoredCards) {
+    secureStorage.cachedStoredCards.forEach((key, value) {
       cards.add(
-        CardView(card: card),
+        CardView(
+          card: value,
+          deleteFunction: () => {deleteSpecificCard(key)},
+        ),
       );
-    }
+    });
 
     return Column(
       children: [
@@ -159,14 +162,14 @@ class _MyHomePageState extends State<MyHomePage>
     });
   }
 
-  void deleteSpecificCard(String cardNumber) async {
+  void deleteSpecificCard(String cardKey) async {
     await uiService.showConfirmPopup(
       context,
       "Delete this Card Permanently?",
       "Are you sure you want to delete your Secure Card? This cannot be undone.",
       "Delete Card",
       popTwice: false,
-      callback: () => {secureStorage.removeCard(cardNumber)},
+      callback: () => {secureStorage.removeCard(cardKey)},
     );
 
     setState(() {
