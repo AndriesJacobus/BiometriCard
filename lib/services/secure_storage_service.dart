@@ -40,14 +40,15 @@ class SecureStorageService {
       return false;
     }
 
-    // Add a card to memory
-    cachedStoredCards.add(card);
-
     // Store card in secure storage
     await storage?.write(
       key: "scard${uuid.v4().replaceAll("-", "")}",
       value: SecureCard.serialize(card),
     );
+
+    // Add the card to memory
+    cachedStoredCards.add(card);
+
     return true;
   }
 
@@ -56,7 +57,13 @@ class SecureStorageService {
     await storage?.deleteAll();
   }
 
+  Future<void> removeCard(String cardNumber) async {
+    cachedStoredCards = [];
+    await storage?.deleteAll();
+  }
+
   bool cardExists(SecureCard card) {
+    // Check if a card with the same number already exists
     return cachedStoredCards.any(
       (existingCard) => existingCard.number == card.number,
     );

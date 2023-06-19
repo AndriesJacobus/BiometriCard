@@ -1,5 +1,7 @@
-import 'package:biometricard/models/secure_card.dart';
 import 'package:flutter/material.dart';
+import 'package:biometricard/models/auth_status.dart';
+import 'package:biometricard/models/secure_card.dart';
+import 'package:biometricard/services/local_auth_service.dart';
 import 'package:biometricard/components/card_view.dart';
 import 'package:biometricard/common/colors.dart';
 import 'package:biometricard/mixins/secure_storage_mixin.dart';
@@ -15,15 +17,46 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage>
-    with SecureStorage<MyHomePage> {
+    with SecureStorage, LocalAuthService {
   bool hasCards = false;
+  bool authPassed = false;
 
   @override
   void initState() {
     super.initState();
 
+    authenticateAndLoadCards();
+  }
+
+  Future<void> authenticateAndLoadCards() async {
+    AuthStatus authStatus = await authenticateLocally();
+
+    if (authStatus == AuthStatus.success ||
+        authStatus == AuthStatus.unsupported) {
+      // Load cards
+      setState(() {
+        authPassed = true;
+        hasCards = secureStorage.cachedStoredCards.isNotEmpty;
+      });
+    } else {
+      // Show error message
+      showAuthFailureMessage();
+    }
+  }
+
+  Future<void> showAuthFailureMessage() async {
+    await uiService.showConfirmPopup(
+      context,
+      "Authentication Failed",
+      "Authentication has failed. Please try again to view and manage your Secure Cards.",
+      "Okay",
+      confirmColor: AppColors.persianGreen,
+      showCancel: false,
+      popTwice: false,
+    );
+
     setState(() {
-      hasCards = secureStorage.cachedStoredCards.isNotEmpty;
+      authPassed = false;
     });
   }
 
@@ -126,6 +159,71 @@ class _MyHomePageState extends State<MyHomePage>
     });
   }
 
+  void deleteSpecificCard(String cardNumber) async {
+    await uiService.showConfirmPopup(
+      context,
+      "Delete this Card Permanently?",
+      "Are you sure you want to delete your Secure Card? This cannot be undone.",
+      "Delete Card",
+      popTwice: false,
+      callback: () => {secureStorage.removeCard(cardNumber)},
+    );
+
+    setState(() {
+      hasCards = secureStorage.cachedStoredCards.isNotEmpty;
+    });
+  }
+
+  Widget renderAuthPassed() {
+    if (hasCards) {
+      return renderCards();
+    } else {
+      return renderNoCards();
+    }
+  }
+
+  Column renderAuthNotPassed() {
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(
+            left: 50,
+            right: 50,
+          ),
+          child: Text(
+            'Authenticate your profile to view and manage your Secure Cards.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppColors.persianGreen,
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: authenticateAndLoadCards,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+            decoration: BoxDecoration(
+              color: AppColors.lightGreen,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            width: double.infinity,
+            alignment: Alignment.center,
+            child: const Text(
+              'Authenticate',
+              style: TextStyle(
+                color: AppColors.persianBlue,
+                fontFamily: 'halter',
+                fontSize: 14,
+                package: 'flutter_credit_card',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,10 +231,11 @@ class _MyHomePageState extends State<MyHomePage>
         title: Text(widget.title),
         backgroundColor: AppColors.persianGreen,
         actions: [
-          IconButton(
-            onPressed: deleteAllCards,
-            icon: const Icon(Icons.delete_rounded),
-          ),
+          if (authPassed)
+            IconButton(
+              onPressed: deleteAllCards,
+              icon: const Icon(Icons.delete_rounded),
+            ),
         ],
       ),
       body: Container(
@@ -151,19 +250,21 @@ class _MyHomePageState extends State<MyHomePage>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                hasCards ? renderCards() : renderNoCards(),
+                authPassed ? renderAuthPassed() : renderAuthNotPassed(),
                 // const Text("Hi"),
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: showAddBottomSheet,
-        tooltip: 'Add Card',
-        backgroundColor: AppColors.persianGreen,
-        child: const Icon(Icons.add_card),
-      ),
+      floatingActionButton: authPassed
+          ? FloatingActionButton(
+              onPressed: showAddBottomSheet,
+              tooltip: 'Add Card',
+              backgroundColor: AppColors.persianGreen,
+              child: const Icon(Icons.add_card),
+            )
+          : null,
     );
   }
 }

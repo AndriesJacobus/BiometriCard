@@ -21,6 +21,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.green,
+        scrollbarTheme: ScrollbarThemeData(
+          thumbVisibility: MaterialStateProperty.all<bool>(true),
+        ),
       ),
       home: MyHomePage(
         title: "My Secure Cards",
