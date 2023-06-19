@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
           thumbVisibility: MaterialStateProperty.all<bool>(true),
         ),
       ),
-      home: MyHomePage(
-        title: "My Secure Cards",
+      home: const MyHomePage(
+        title: "Secure Cards",
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:biometricard/mixins/secure_storage_mixin.dart';
 import 'package:biometricard/models/secure_card.dart';
 import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:biometricard/components/live_time_text.dart';
 import 'package:uuid/uuid.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -40,7 +41,6 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime cardCreatedAt = DateTime.parse(widget.card.dateAdded!);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Container(
@@ -56,13 +56,7 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
                 top: 10,
                 left: 10,
               ),
-              child: Text(
-                'Added ${timeago.format(cardCreatedAt).toString()}',
-                style: const TextStyle(
-                  color: AppColors.persianGreen,
-                  fontSize: 14,
-                ),
-              ),
+              child: LiveTimeText(timeString: widget.card.dateAdded!),
             ),
             CreditCardWidget(
               glassmorphismConfig: null,
