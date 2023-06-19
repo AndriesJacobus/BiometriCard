@@ -22,7 +22,7 @@ class LiveTimeTextState extends State<LiveTimeText> {
     setState(() {
       const period = Duration(minutes: 1);
       Timer.periodic(period, (Timer t) {
-        debugPrint("Updating text...");
+        // debugPrint("Updating text...");
         setState(() {});
       });
     });
