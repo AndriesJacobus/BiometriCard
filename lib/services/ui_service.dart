@@ -1,4 +1,7 @@
+import 'package:biometricard/common/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UiService {
   void closePopup(context) {
@@ -65,5 +68,35 @@ class UiService {
         );
       },
     );
+  }
+
+  void doToast(
+    String message, {
+    ToastGravity alignment = ToastGravity.BOTTOM,
+    Toast length = Toast.LENGTH_SHORT,
+    Color backgroundColor = AppColors.lightGreen,
+    Color textColor = AppColors.persianBlue,
+  }) {
+    debugPrint("Yum, Toast!");
+
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: length,
+      gravity: alignment,
+      timeInSecForIosWeb: 1,
+      backgroundColor: backgroundColor,
+      textColor: textColor,
+      fontSize: 16.0,
+    );
+  }
+
+  Future<void> copyValueToClipboard(String name, String value) async {
+    debugPrint("Copying to clipboard...");
+    // debugPrint("$name: $value");
+
+    await Clipboard.setData(ClipboardData(text: value));
+
+    // Show toast
+    doToast("$name copied successfully!");
   }
 }

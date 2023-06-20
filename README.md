@@ -26,6 +26,10 @@ The details of the newly captured card is presented to the user in a live Virtua
 
 When saving a card, the details of the card is validated to make sure that they are applicable, and that the captured card isn't a duplicate.
 
+### Card Detail Copying
+User can easily copy the details of their Virtual Cards (once they have passed authentication - if applicable).
+This is super useful for when users need to enter their card details like for online payments. 
+
 ### Scan Card Details
 _Coming soon..._
 

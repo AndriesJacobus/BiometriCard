@@ -1,3 +1,4 @@
+import 'package:biometricard/components/icon_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/common/colors.dart';
 import 'package:biometricard/mixins/secure_storage_mixin.dart';
@@ -41,18 +42,6 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
 
   @override
   Widget build(BuildContext context) {
-    List<DropdownMenuItem> copyItems = [
-      DropdownMenuItem(
-        onTap: () => {},
-        value: "number",
-        child: const Text("Card Number"),
-      ),
-      DropdownMenuItem(
-        onTap: () => {},
-        value: "CVV",
-        child: const Text("Card CVV"),
-      ),
-    ];
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Container(
@@ -67,8 +56,22 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
               padding: const EdgeInsets.only(
                 top: 10,
                 left: 10,
+                right: 10,
               ),
-              child: LiveTimeText(timeString: widget.card.dateAdded!),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  LiveTimeText(timeString: widget.card.dateAdded!),
+                  SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: IconDropdown(
+                      cardNumber: widget.card.number,
+                      cardCVV: widget.card.cVV,
+                    ),
+                  ),
+                ],
+              ),
             ),
             CreditCardWidget(
               glassmorphismConfig: null,
@@ -97,7 +100,7 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
                   child: Row(
                     children: [
                       Text(
-                        isCardUnlocked! ? "Unlock" : 'Lock',
+                        isCardUnlocked! ? "View" : 'Hide',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -110,8 +113,8 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
                       ),
                       Icon(
                         isCardUnlocked!
-                            ? Icons.lock_open_rounded
-                            : Icons.lock_rounded,
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.white,
                         size: 20,
                       ),

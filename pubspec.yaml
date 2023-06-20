@@ -22,6 +22,7 @@ dependencies:
   local_auth: ^2.1.6
   timeago: ^3.4.0
   dropdown_button2: ^2.1.4
+  fluttertoast: ^8.2.2
 
 dev_dependencies:
   flutter_test:
