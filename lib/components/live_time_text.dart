@@ -9,12 +9,10 @@ class LiveTimeText extends StatefulWidget {
   const LiveTimeText({super.key, required this.timeString});
 
   @override
-  State<StatefulWidget> createState() {
-    return LiveTimeTextState();
-  }
+  State<LiveTimeText> createState() => _LiveTimeTextState();
 }
 
-class LiveTimeTextState extends State<LiveTimeText> {
+class _LiveTimeTextState extends State<LiveTimeText> {
   @override
   void initState() {
     super.initState();
@@ -23,7 +21,9 @@ class LiveTimeTextState extends State<LiveTimeText> {
       const period = Duration(minutes: 1);
       Timer.periodic(period, (Timer t) {
         // debugPrint("Updating text...");
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
     });
   }

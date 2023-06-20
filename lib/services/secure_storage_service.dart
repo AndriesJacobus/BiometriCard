@@ -41,7 +41,8 @@ class SecureStorageService {
     }
 
     // Store card in secure storage
-    String newKey = "scard${uuid.v4().replaceAll("-", "")}";
+    // String newKey = "scard${uuid.v4().replaceAll("-", "")}";
+    String newKey = "scard_${card.dateAdded}";
     await storage?.write(
       key: newKey,
       value: SecureCard.serialize(card),
