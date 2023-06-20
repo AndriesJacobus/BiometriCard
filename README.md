@@ -2,7 +2,7 @@
 
 Safest way to keep track of your cards locally.
 
-Safe, encrypted, open source, biometric-secured, locally safed bank card saving.
+Safe, open source, biometric-secured, locally stored bank card saving.
 Lets break that down...
 
 ## BiometriCard Top-Level Features
