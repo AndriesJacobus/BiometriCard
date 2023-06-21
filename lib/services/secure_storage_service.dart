@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:biometricard/models/country.dart';
 import 'package:biometricard/models/secure_card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:uuid/uuid.dart';
@@ -8,6 +9,7 @@ class SecureStorageService {
   // Sync up between secure storage and local state
   FlutterSecureStorage? storage;
   Map<String, SecureCard> cachedStoredCards = <String, SecureCard>{};
+  Map<String, Country> cachedBlacklistedCountries = <String, Country>{};
   Uuid uuid = const Uuid();
 
   Future init() async {
@@ -74,6 +76,36 @@ class SecureStorageService {
     // Check if a card with the same number already exists
     return cachedStoredCards.values.toList().any(
           (existingCard) => existingCard.number == card.number,
+        );
+  }
+
+  // Methods for blacklisted countries
+
+  Future<bool> blacklistCountry(Country country) async {
+    // First make sure the card doesn't exist already
+    if (countryBlacklisted(country)) {
+      debugPrint("Country already blacklisted");
+      return false;
+    }
+
+    // Store card in secure storage
+    // String newKey = "scard${uuid.v4().replaceAll("-", "")}";
+    String newKey = "bcountry_${DateTime.now().toString().split(".")[0]}";
+    await storage?.write(
+      key: newKey,
+      value: Country.serialize(country),
+    );
+
+    // Add the card to memory
+    cachedBlacklistedCountries.addAll({newKey: country});
+
+    return true;
+  }
+
+  bool countryBlacklisted(Country country) {
+    // Check if a country with the same code already blacklisted
+    return cachedBlacklistedCountries.values.toList().any(
+          (existingCountry) => existingCountry.code == country.code,
         );
   }
 }

@@ -25,6 +25,7 @@ dependencies:
   fluttertoast: ^8.2.2
   credit_card_scanner: ^1.0.5
   device_info_plus: ^9.0.2
+  country_list_pick: ^1.0.1+6
 
 dev_dependencies:
   flutter_test:
