@@ -19,10 +19,10 @@ class SecureStorageService {
     storage = const FlutterSecureStorage();
 
     // Load stored cards form secure storage into cache
-    await _loadStoredCards();
+    await _loadStoredEntities();
   }
 
-  Future<void> _loadStoredCards() async {
+  Future<void> _loadStoredEntities() async {
     Map<String, String>? allStoredItems = await storage?.readAll();
 
     // Go through allStoredCards and deserialise into list of SecureCards
@@ -31,6 +31,9 @@ class SecureStorageService {
       if (key.substring(0, 5) == "scard") {
         debugPrint("Adding a card to memory...");
         cachedStoredCards.addAll({key: SecureCard.deserialize(value)});
+      } else if (key.substring(0, 8) == "bcountry") {
+        debugPrint("Adding a blacklisted country to memory...");
+        cachedBlacklistedCountries.addAll({key: Country.deserialize(value)});
       }
     });
   }
@@ -107,5 +110,21 @@ class SecureStorageService {
     return cachedBlacklistedCountries.values.toList().any(
           (existingCountry) => existingCountry.code == country.code,
         );
+  }
+
+  Future<void> removeAllCountres() async {
+    // Remove from memory
+    cachedBlacklistedCountries.clear();
+
+    // Remove from storage
+    await storage?.deleteAll();
+  }
+
+  Future<void> removeCountry(String countryKey) async {
+    // Remove from memory
+    cachedBlacklistedCountries.remove(countryKey);
+
+    // Remove from storage
+    await storage?.delete(key: countryKey);
   }
 }
