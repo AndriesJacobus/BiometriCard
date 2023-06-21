@@ -248,7 +248,7 @@ class _MyHomePageState extends State<MyHomePage>
               ),
             ),
           },
-          icon: const Icon(Icons.image_not_supported_rounded),
+          icon: const Icon(Icons.cancel_schedule_send_outlined),
         ),
         actions: [
           if (authPassed)
