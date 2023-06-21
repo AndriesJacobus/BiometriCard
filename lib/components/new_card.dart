@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:biometricard/models/secure_card.dart';
 import 'package:biometricard/common/colors.dart';
 import 'package:biometricard/mixins/secure_storage_mixin.dart';
 import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:credit_card_scanner/credit_card_scanner.dart';
 
 class NewCard extends StatefulWidget {
   const NewCard({super.key});
@@ -27,16 +30,37 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
 
   OutlineInputBorder? border;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  bool isSim = false;
 
   @override
   void initState() {
     super.initState();
+
     border = OutlineInputBorder(
       borderSide: BorderSide(
         color: AppColors.persianBlue.withOpacity(0.7),
         width: 2.0,
       ),
     );
+
+    detectSims();
+  }
+
+  Future<void> detectSims() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      final androidInfo = await deviceInfo.androidInfo;
+
+      setState(() {
+        isSim = !androidInfo.isPhysicalDevice;
+      });
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+
+      setState(() {
+        isSim = !iosInfo.isPhysicalDevice;
+      });
+    }
   }
 
   void onCreditCardModelChange(CreditCardModel? creditCardModel) {
@@ -100,6 +124,45 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
       }
     } else {
       debugPrint('Card invalid!');
+    }
+  }
+
+  Future<void> scanCardDetails() async {
+    if (!isSim) {
+      var cardDetails = await CardScanner.scanCard(
+        scanOptions: const CardScanOptions(
+          scanCardHolderName: true,
+          scanExpiryDate: true,
+          considerPastDatesInExpiryDateScan: true,
+        ),
+      );
+
+      setState(() {
+        cardNumber = cardDetails!.cardNumber;
+        capturedExpiryDate = cardDetails!.expiryDate;
+        cardHolderName = cardDetails!.cardHolderName;
+        bankName = cardDetails!.cardIssuer;
+      });
+
+      formKey.currentState?.setState(() {
+        cardNumber = cardDetails!.cardNumber;
+        // expiryDate = cardDetails!.expiryDate;
+        cardHolderName = cardDetails!.cardHolderName;
+      });
+
+      debugPrint(cardDetails.toString());
+
+      // Post toast
+      // TODO
+    } else {
+      uiService.showConfirmPopup(
+        context,
+        "Option not supported on Simulator",
+        "To use the Scan Card feature, please connect flutter to a physical device.",
+        "Okay",
+        showCancel: false,
+        popTwice: false,
+      );
     }
   }
 
@@ -205,6 +268,28 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
                     const SizedBox(
                       height: 20,
                     ),
+                    // GestureDetector(
+                    //   onTap: scanCardDetails,
+                    //   child: Container(
+                    //     margin: const EdgeInsets.symmetric(horizontal: 120),
+                    //     decoration: BoxDecoration(
+                    //       color: AppColors.lightGreen,
+                    //       borderRadius: BorderRadius.circular(8),
+                    //     ),
+                    //     padding: const EdgeInsets.symmetric(vertical: 5),
+                    //     width: double.infinity,
+                    //     alignment: Alignment.center,
+                    //     child: const Text(
+                    //       'Scan Card',
+                    //       style: TextStyle(
+                    //         color: AppColors.persianBlue,
+                    //         fontFamily: 'halter',
+                    //         fontSize: 14,
+                    //         package: 'flutter_credit_card',
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     GestureDetector(
                       onTap: _onValidate,
                       child: Container(

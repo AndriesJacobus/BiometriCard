@@ -7,7 +7,6 @@ import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:biometricard/components/live_time_text.dart';
 import 'package:uuid/uuid.dart';
-import 'package:dropdown_button2/src/dropdown_button2.dart';
 
 class CardView extends StatefulWidget {
   final SecureCard card;

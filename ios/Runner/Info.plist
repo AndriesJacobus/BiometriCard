@@ -49,5 +49,7 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enable FaceID to secure your stored Cards</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Enable Camera permissions to enable Card scanning</string>
 </dict>
 </plist>

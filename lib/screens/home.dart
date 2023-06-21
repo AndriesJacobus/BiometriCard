@@ -1,3 +1,4 @@
+import 'package:biometricard/screens/blacklist.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/models/auth_status.dart';
 import 'package:biometricard/models/secure_card.dart';
@@ -238,6 +239,17 @@ class _MyHomePageState extends State<MyHomePage>
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: AppColors.persianGreen,
+        leading: IconButton(
+          onPressed: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => const Blacklist(),
+              ),
+            ),
+          },
+          icon: const Icon(Icons.image_not_supported_rounded),
+        ),
         actions: [
           if (authPassed)
             IconButton(
