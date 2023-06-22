@@ -15,4 +15,9 @@ class INNEntry {
     this.bankUrl,
     this.bankCity,
   });
+
+  @override
+  String toString() {
+    return country;
+  }
 }

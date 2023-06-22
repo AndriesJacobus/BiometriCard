@@ -1,3 +1,6 @@
+import 'package:biometricard/components/blacklisted_country.dart';
+import 'package:biometricard/models/country.dart';
+import 'package:biometricard/models/iNNEntry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -98,12 +101,42 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
     );
   }
 
+  void showCardBlacklistedPopup() async {
+    await uiService.showConfirmPopup(
+      context,
+      "Card Country is Blacklisted",
+      "There was an error saving your new card: Card Country is Blacklisted.\n\nPlease enter card details of a card not blacklisted.",
+      "Try again",
+      showCancel: false,
+      popTwice: false,
+      confirmColor: Colors.black,
+    );
+  }
+
   void _onValidate() async {
     if (formKey.currentState!.validate()) {
       debugPrint('Card valid!');
 
-      // Get more details using card numbers at
-      // https://github.com/binlist/data/blob/master/ranges.csv
+      // Check card to make sure it isn't blacklisted
+      // Get INNEntry using INN number (first 6 digits of card number)
+      INNEntry? innEntry = cardCountries
+          .getCardDataForInn(cardNumber.replaceAll(" ", "").substring(0, 6));
+
+      if (innEntry != null) {
+        // debugPrint("innEntry code: ${innEntry.toString()}");
+        // Make sure blacklist doesn't include country with innEntry's code
+        bool blacklisted = secureStorage.countryBlacklisted(
+          Country(
+            name: "",
+            code: innEntry.country,
+          ),
+        );
+
+        if (blacklisted) {
+          showCardBlacklistedPopup();
+          return;
+        }
+      }
 
       // Save card to secure storage
       bool saveSuccess = await secureStorage.saveAndStoreCard(

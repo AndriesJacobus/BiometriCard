@@ -46,7 +46,12 @@ class _BlacklistState extends State<Blacklist>
 
   void unBlacklistCountry(String key, String name) async {
     await secureStorage.removeCountry(key);
-    showSuccessPopup(name);
+    // showSuccessPopup(name);
+
+    setState(() {
+      hasBlacklistedCountries =
+          secureStorage.cachedBlacklistedCountries.isNotEmpty;
+    });
   }
 
   Column renderBlacklist() {
