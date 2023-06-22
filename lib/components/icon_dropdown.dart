@@ -1,3 +1,4 @@
+import 'package:biometricard/mixins/secure_storage_mixin.dart';
 import 'package:biometricard/services/ui_service.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/common/colors.dart';
@@ -19,9 +20,9 @@ class IconDropdown extends StatefulWidget {
   State<IconDropdown> createState() => _IconDropdownState();
 }
 
-class _IconDropdownState extends State<IconDropdown> {
+class _IconDropdownState extends State<IconDropdown> with SecureStorage {
   Future<void> copyToClipboard(String name, String value) async {
-    await UiService().copyValueToClipboard("Card $name", value);
+    await uiService.copyValueToClipboard("Card $name", value);
   }
 
   @override

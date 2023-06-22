@@ -21,7 +21,7 @@ class BlacklistedCountry extends StatefulWidget {
 class _BlacklistedCountryState extends State<BlacklistedCountry>
     with SecureStorage {
   Future<void> copyToClipboard(String name, String value) async {
-    await UiService().copyValueToClipboard("Card $name", value);
+    await uiService.copyValueToClipboard("Card $name", value);
   }
 
   @override

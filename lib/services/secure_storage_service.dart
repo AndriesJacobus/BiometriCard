@@ -13,8 +13,6 @@ class SecureStorageService {
   Uuid uuid = const Uuid();
 
   Future init() async {
-    debugPrint("Here in SecureStorageService init...");
-
     // Create storage
     storage = const FlutterSecureStorage();
 
@@ -29,13 +27,15 @@ class SecureStorageService {
     allStoredItems?.forEach((key, value) {
       // Make sure this is a stored card
       if (key.substring(0, 5) == "scard") {
-        debugPrint("Adding a card to memory...");
+        // debugPrint("Adding a card to memory...");
         cachedStoredCards.addAll({key: SecureCard.deserialize(value)});
       } else if (key.substring(0, 8) == "bcountry") {
-        debugPrint("Adding a blacklisted country to memory...");
+        // debugPrint("Adding a blacklisted country to memory...");
         cachedBlacklistedCountries.addAll({key: Country.deserialize(value)});
       }
     });
+
+    debugPrint("Stored entries loaded.");
   }
 
   Future<bool> saveAndStoreCard(SecureCard card) async {
@@ -46,7 +46,6 @@ class SecureStorageService {
     }
 
     // Store card in secure storage
-    // String newKey = "scard${uuid.v4().replaceAll("-", "")}";
     String newKey = "scard_${card.dateAdded}";
     await storage?.write(
       key: newKey,
@@ -92,7 +91,6 @@ class SecureStorageService {
     }
 
     // Store card in secure storage
-    // String newKey = "scard${uuid.v4().replaceAll("-", "")}";
     String newKey = "bcountry_${DateTime.now().toString().split(".")[0]}";
     await storage?.write(
       key: newKey,
