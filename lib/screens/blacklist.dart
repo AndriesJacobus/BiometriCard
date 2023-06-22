@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:biometricard/models/auth_status.dart';
-import 'package:biometricard/models/secure_card.dart';
+import 'package:biometricard/components/new_blacklisted_country.dart';
 import 'package:biometricard/services/local_auth_service.dart';
-import 'package:biometricard/components/card_view.dart';
 import 'package:biometricard/common/colors.dart';
 import 'package:biometricard/mixins/secure_storage_mixin.dart';
-import 'package:biometricard/components/new_card.dart';
 
 class Blacklist extends StatefulWidget {
   const Blacklist({super.key});
@@ -16,18 +13,90 @@ class Blacklist extends StatefulWidget {
 
 class _BlacklistState extends State<Blacklist>
     with SecureStorage, LocalAuthService {
-  bool hasCards = false;
-  bool authPassed = false;
+  bool hasBlacklistedCountries = false;
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      hasBlacklistedCountries =
+          secureStorage.cachedBlacklistedCountries.isNotEmpty;
+    });
   }
 
   Column renderBlacklist() {
     return Column(
       children: [
-        const Text("Oh oh"),
+        const Text("Country blacklisted"),
+      ],
+    );
+  }
+
+  Future<void> showBlacklistBottomSheet() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.25,
+          child: const NewBlacklistedCountry(),
+        );
+      },
+    );
+
+    setState(() {
+      hasBlacklistedCountries =
+          secureStorage.cachedBlacklistedCountries.isNotEmpty;
+    });
+  }
+
+  Column renderEmptyBlacklist() {
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(
+            left: 50,
+            right: 50,
+          ),
+          child: Text(
+            'You currently have no blacklisted Countries.\nBlacklist a Country to get started!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppColors.persianGreen,
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: showBlacklistBottomSheet,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            width: double.infinity,
+            alignment: Alignment.center,
+            child: const Text(
+              'Blacklist Country',
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'halter',
+                fontSize: 14,
+                package: 'flutter_credit_card',
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -37,26 +106,28 @@ class _BlacklistState extends State<Blacklist>
     return Scaffold(
       appBar: AppBar(
         title: const Text("Blacklist"),
-        backgroundColor: AppColors.persianGreen,
+        backgroundColor: Colors.black,
       ),
       body: SizedBox(
         child: Center(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[renderBlacklist()],
+              children: <Widget>[
+                (hasBlacklistedCountries)
+                    ? renderBlacklist()
+                    : renderEmptyBlacklist(),
+              ],
             ),
           ),
         ),
       ),
-      floatingActionButton: authPassed
-          ? FloatingActionButton(
-              onPressed: () => {},
-              tooltip: 'Add Country',
-              backgroundColor: AppColors.persianGreen,
-              child: const Icon(Icons.add_circle),
-            )
-          : null,
+      floatingActionButton: FloatingActionButton(
+        onPressed: showBlacklistBottomSheet,
+        tooltip: 'Blacklist Country',
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
