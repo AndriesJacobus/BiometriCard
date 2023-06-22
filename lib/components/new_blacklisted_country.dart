@@ -20,21 +20,65 @@ class NewBlacklistedCountryState extends State<NewBlacklistedCountry>
   @override
   void initState() {
     super.initState();
+
+    setState(() {
+      toBlacklist = const Country(name: "Afghanistan", code: "AF");
+    });
   }
 
-  void _blacklistCountry() {
-    if (toBlacklist != null) {
-      secureStorage.blacklistCountry(toBlacklist!);
+  void showSuccessPopup() {
+    // Show popup
+    uiService.showConfirmPopup(
+      context,
+      "Country Blacklisted successfully",
+      "${toBlacklist!.name} has been successfully blacklisted",
+      "View Blacklist",
+      showCancel: false,
+      popTwice: true,
+      confirmColor: AppColors.persianGreen,
+    );
+  }
 
-      // Show success popup
-      // TODO
+  void showFailurePopup() {
+    // Show popup
+    uiService.showConfirmPopup(
+      context,
+      "Country already Blacklisted",
+      "There was an error blacklisting ${toBlacklist!.name}: Already Blacklisted.\n\nPlease choose another Country to Blacklist.",
+      "Try again",
+      showCancel: false,
+      popTwice: false,
+      confirmColor: Colors.black,
+    );
+  }
+
+  void showNoCountryPopup() {
+    // Show popup
+    uiService.showConfirmPopup(
+      context,
+      "No Country Selected",
+      "There was an error blacklisting a Country: No Country Selected.\n\nPlease choose a Country to Blacklist.",
+      "Try again",
+      showCancel: false,
+      popTwice: false,
+      confirmColor: Colors.black,
+    );
+  }
+
+  void _blacklistCountry() async {
+    if (toBlacklist != null) {
+      bool saveSuccess = await secureStorage.blacklistCountry(toBlacklist!);
+
+      if (saveSuccess) {
+        // Show success popup
+        showSuccessPopup();
+      } else {
+        showFailurePopup();
+      }
     } else {
       // Show error popup
-      // TODO
+      showNoCountryPopup();
     }
-
-    // Close bottom sheet
-    Navigator.of(context).pop();
   }
 
   @override

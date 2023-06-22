@@ -1,3 +1,4 @@
+import 'package:biometricard/models/country.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/components/new_blacklisted_country.dart';
 import 'package:biometricard/services/local_auth_service.dart';
@@ -25,9 +26,22 @@ class _BlacklistState extends State<Blacklist>
   }
 
   Column renderBlacklist() {
+    List<Widget> countries = [];
+
+    secureStorage.cachedBlacklistedCountries.forEach((key, value) {
+      countries.add(
+        Text(value.name),
+      );
+    });
+
     return Column(
       children: [
-        const Text("Country blacklisted"),
+        ...countries,
+        const Padding(
+          padding: EdgeInsets.only(
+            bottom: 20,
+          ),
+        ),
       ],
     );
   }
