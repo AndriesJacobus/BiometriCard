@@ -30,10 +30,11 @@ When saving a card, the details of the card is validated to make sure that they 
 User can easily copy the details of their Virtual Cards (once they have passed authentication - if applicable).
 This is super useful for when users need to enter their card details like for online payments. 
 
-### Scan Card Details
-_Coming soon..._
-
 ### Card Country Blacklist
+Users can maintain a blacklist of countries which cards should be blocked from being added.
+These are also stored in Secure Storage.
+
+### Scan Card Details
 _Coming soon..._
 
 ## BiometriCard Cool Tech Specification
