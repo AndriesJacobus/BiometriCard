@@ -181,7 +181,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
       });
 
       // Post toast
-      // TODO
+      uiService.doToast("Card scanned successfully");
     } else {
       uiService.showConfirmPopup(
         context,

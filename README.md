@@ -35,7 +35,7 @@ Users can maintain a blacklist of countries which cards should be blocked from b
 These are also stored in Secure Storage.
 
 ### Scan Card Details
-_Coming soon..._
+Users can scan cards though the app instead of entering the details manually!
 
 ## BiometriCard Cool Tech Specification
 Mixins, models, and more!
