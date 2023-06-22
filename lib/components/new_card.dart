@@ -1,8 +1,8 @@
-import 'package:biometricard/components/blacklisted_country.dart';
+import 'package:biometricard/components/credit_card_form.dart';
+import 'package:flutter/material.dart';
 import 'package:biometricard/models/country.dart';
 import 'package:biometricard/models/iNNEntry.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:biometricard/models/secure_card.dart';
 import 'package:biometricard/common/colors.dart';
@@ -26,6 +26,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
   String cardHolderName = '';
   String cvvCode = '';
   String bankName = ' ';
+  String cardType = '';
 
   bool isCvvFocused = false;
   bool useGlassMorphism = false;
@@ -73,6 +74,16 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
       cardHolderName = creditCardModel.cardHolderName;
       cvvCode = creditCardModel.cvvCode;
       isCvvFocused = creditCardModel.isCvvFocused;
+    });
+  }
+
+  void onCreditCardDetailChange(SecureCard creditCardModel, bool cvvFocused) {
+    setState(() {
+      cardNumber = creditCardModel.number;
+      capturedExpiryDate = creditCardModel.expiryDate;
+      cardHolderName = creditCardModel.holder;
+      cvvCode = creditCardModel.cVV;
+      isCvvFocused = cvvFocused;
     });
   }
 
