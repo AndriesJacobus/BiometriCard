@@ -1,3 +1,4 @@
+import 'package:biometricard/components/blacklisted_country.dart';
 import 'package:biometricard/models/country.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/components/new_blacklisted_country.dart';
@@ -25,17 +26,58 @@ class _BlacklistState extends State<Blacklist>
     });
   }
 
+  void showSuccessPopup(String name) async {
+    // Show popup
+    await uiService.showConfirmPopup(
+      context,
+      "Country Removed from Blacklist",
+      "$name has been successfully removed form the Blacklist",
+      "View Blacklist",
+      showCancel: false,
+      popTwice: false,
+      confirmColor: AppColors.persianGreen,
+    );
+
+    setState(() {
+      hasBlacklistedCountries =
+          secureStorage.cachedBlacklistedCountries.isNotEmpty;
+    });
+  }
+
+  void unBlacklistCountry(String key, String name) async {
+    await secureStorage.removeCountry(key);
+    showSuccessPopup(name);
+  }
+
   Column renderBlacklist() {
     List<Widget> countries = [];
 
     secureStorage.cachedBlacklistedCountries.forEach((key, value) {
       countries.add(
-        Text(value.name),
+        BlacklistedCountry(
+          country: value,
+          removeFromBlacklist: () => {unBlacklistCountry(key, value.name)},
+        ),
       );
     });
 
     return Column(
       children: [
+        const Padding(
+          padding: EdgeInsets.only(
+            top: 10,
+            bottom: 10,
+          ),
+          child: Text(
+            "Blacklisted Countries:",
+            style: TextStyle(
+              color: AppColors.persianBlue,
+              fontFamily: 'halter',
+              fontSize: 16,
+              package: 'flutter_credit_card',
+            ),
+          ),
+        ),
         ...countries,
         const Padding(
           padding: EdgeInsets.only(
