@@ -39,11 +39,20 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
     });
   }
 
+  String formattedCardNumber(String cardNumber) {
+    return cardNumber.replaceAllMapped(
+      RegExp(r".{4}"),
+      (match) => "${match.group(0)} ",
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
+      key: UniqueKey(),
       padding: const EdgeInsets.all(10),
       child: Container(
+        key: UniqueKey(),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -58,6 +67,7 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
           ],
         ),
         child: Column(
+          key: UniqueKey(),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
@@ -82,8 +92,9 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
               ),
             ),
             CreditCardWidget(
+              key: UniqueKey(),
               glassmorphismConfig: null,
-              cardNumber: widget.card.number,
+              cardNumber: formattedCardNumber(widget.card.number),
               expiryDate: widget.card.expiryDate,
               cardHolderName: widget.card.holder,
               cvvCode: widget.card.cVV,
@@ -137,8 +148,8 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
                 ElevatedButton(
                   onPressed: () => widget.deleteFunction(),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  child: Row(
-                    children: const [
+                  child: const Row(
+                    children: [
                       Text(
                         'Delete',
                         style: TextStyle(

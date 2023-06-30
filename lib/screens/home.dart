@@ -95,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage>
     secureStorage.cachedStoredCards.forEach((key, value) {
       cards.add(
         CardView(
+          key: UniqueKey(),
           card: value,
           deleteFunction: () => {deleteSpecificCard(key)},
         ),
@@ -102,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage>
     });
 
     return Column(
+      key: UniqueKey(),
       children: [
         ...cards,
         const Padding(
