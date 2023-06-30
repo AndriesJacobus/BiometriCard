@@ -1,4 +1,3 @@
-import 'package:biometricard/components/credit_card_form.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/models/country.dart';
 import 'package:biometricard/models/iNNEntry.dart';
@@ -37,6 +36,15 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   bool isSim = false;
 
+  final MaskedTextController _cardNumberController =
+      MaskedTextController(mask: '0000 0000 0000 0000');
+  final TextEditingController _expiryDateController =
+      MaskedTextController(mask: '00/00');
+  final TextEditingController _cardHolderNameController =
+      TextEditingController();
+  final TextEditingController _cvvCodeController =
+      MaskedTextController(mask: '0000');
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +55,11 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
         width: 2.0,
       ),
     );
+
+    _cardNumberController.text = cardNumber;
+    _expiryDateController.text = capturedExpiryDate;
+    _cardHolderNameController.text = cardHolderName;
+    _cvvCodeController.text = cvvCode;
 
     detectSims();
   }
@@ -182,8 +195,6 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
         ),
       );
 
-      // debugPrint(cardDetails.toString());
-
       // Add card details and remove
       setState(() {
         cardNumber = cardDetails!.cardNumber;
@@ -205,133 +216,302 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
     }
   }
 
+  // Widget renderCardForm() {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       children: <Widget>[
+  //       CreditCardForm(
+  //         key: UniqueKey(),
+  //         formKey: formKey,
+  //         obscureCvv: true,
+  //         obscureNumber: true,
+  //         cardNumber: cardNumber,
+  //         cvvCode: cvvCode,
+  //         isHolderNameVisible: true,
+  //         isCardNumberVisible: true,
+  //         isExpiryDateVisible: true,
+  //         cardHolderName: cardHolderName,
+  //         expiryDate: capturedExpiryDate,
+  //         themeColor: Colors.blue,
+  //         textColor: AppColors.persianBlue,
+  //         cardNumberDecoration: InputDecoration(
+  //           labelText: 'Number',
+  //           hintText: 'XXXX XXXX XXXX XXXX',
+  //           hintStyle: const TextStyle(color: AppColors.persianGreen),
+  //           labelStyle: const TextStyle(color: AppColors.persianBlue),
+  //           focusedBorder: border,
+  //           enabledBorder: border,
+  //         ),
+  //         expiryDateDecoration: InputDecoration(
+  //           hintStyle: const TextStyle(color: AppColors.persianGreen),
+  //           labelStyle: const TextStyle(color: AppColors.persianBlue),
+  //           focusedBorder: border,
+  //           enabledBorder: border,
+  //           labelText: 'Expired Date',
+  //           hintText: 'XX/XX',
+  //         ),
+  //         cvvCodeDecoration: InputDecoration(
+  //           hintStyle: const TextStyle(color: AppColors.persianGreen),
+  //           labelStyle: const TextStyle(color: AppColors.persianBlue),
+  //           focusedBorder: border,
+  //           enabledBorder: border,
+  //           labelText: 'CVV',
+  //           hintText: 'XXX',
+  //         ),
+  //         cardHolderDecoration: InputDecoration(
+  //           hintStyle: const TextStyle(color: AppColors.persianGreen),
+  //           labelStyle: const TextStyle(color: AppColors.persianBlue),
+  //           focusedBorder: border,
+  //           enabledBorder: border,
+  //           labelText: 'Card Holder',
+  //         ),
+  //         onCreditCardModelChange: onCreditCardModelChange,
+  //       ),
+  //       const SizedBox(
+  //         height: 20,
+  //       ),
+  //       GestureDetector(
+  //         onTap: scanCardDetails,
+  //         child: Container(
+  //           margin: const EdgeInsets.symmetric(horizontal: 120),
+  //           decoration: BoxDecoration(
+  //             color: AppColors.lightGreen,
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //           padding: const EdgeInsets.symmetric(vertical: 5),
+  //           width: double.infinity,
+  //           alignment: Alignment.center,
+  //           child: const Text(
+  //             'Scan Card',
+  //             style: TextStyle(
+  //               color: AppColors.persianBlue,
+  //               fontFamily: 'halter',
+  //               fontSize: 14,
+  //               package: 'flutter_credit_card',
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //       GestureDetector(
+  //         onTap: _onValidate,
+  //         child: Container(
+  //           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //           decoration: BoxDecoration(
+  //             color: AppColors.lightGreen,
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //           padding: const EdgeInsets.symmetric(vertical: 15),
+  //           width: double.infinity,
+  //           alignment: Alignment.center,
+  //           child: const Text(
+  //             'Save',
+  //             style: TextStyle(
+  //               color: AppColors.persianBlue,
+  //               fontFamily: 'halter',
+  //               fontSize: 14,
+  //               package: 'flutter_credit_card',
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //       GestureDetector(
+  //         onTap: () async => uiService.showConfirmPopup(
+  //           context,
+  //           "Are you sure?",
+  //           "Are you sure you want to discard this new Secure Card?",
+  //           "Discard",
+  //           popTwice: true,
+  //         ),
+  //         child: Container(
+  //           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //           decoration: BoxDecoration(
+  //             color: Colors.red[300],
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //           padding: const EdgeInsets.symmetric(vertical: 15),
+  //           width: double.infinity,
+  //           alignment: Alignment.center,
+  //           child: const Text(
+  //             'Discard',
+  //             style: TextStyle(
+  //               color: AppColors.persianBlue,
+  //               fontFamily: 'halter',
+  //               fontSize: 14,
+  //               package: 'flutter_credit_card',
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   ),
+  // );
+  // }
+
   Widget renderCardForm() {
     return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          CreditCardForm(
-            key: UniqueKey(),
-            formKey: formKey,
-            obscureCvv: true,
-            obscureNumber: true,
-            cardNumber: cardNumber,
-            cvvCode: cvvCode,
-            isHolderNameVisible: true,
-            isCardNumberVisible: true,
-            isExpiryDateVisible: true,
-            cardHolderName: cardHolderName,
-            expiryDate: capturedExpiryDate,
-            themeColor: Colors.blue,
-            textColor: AppColors.persianBlue,
-            cardNumberDecoration: InputDecoration(
-              labelText: 'Number',
-              hintText: 'XXXX XXXX XXXX XXXX',
-              hintStyle: const TextStyle(color: AppColors.persianGreen),
-              labelStyle: const TextStyle(color: AppColors.persianBlue),
-              focusedBorder: border,
-              enabledBorder: border,
-            ),
-            expiryDateDecoration: InputDecoration(
-              hintStyle: const TextStyle(color: AppColors.persianGreen),
-              labelStyle: const TextStyle(color: AppColors.persianBlue),
-              focusedBorder: border,
-              enabledBorder: border,
-              labelText: 'Expired Date',
-              hintText: 'XX/XX',
-            ),
-            cvvCodeDecoration: InputDecoration(
-              hintStyle: const TextStyle(color: AppColors.persianGreen),
-              labelStyle: const TextStyle(color: AppColors.persianBlue),
-              focusedBorder: border,
-              enabledBorder: border,
-              labelText: 'CVV',
-              hintText: 'XXX',
-            ),
-            cardHolderDecoration: InputDecoration(
-              hintStyle: const TextStyle(color: AppColors.persianGreen),
-              labelStyle: const TextStyle(color: AppColors.persianBlue),
-              focusedBorder: border,
-              enabledBorder: border,
-              labelText: 'Card Holder',
-            ),
-            onCreditCardModelChange: onCreditCardModelChange,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          GestureDetector(
-            onTap: scanCardDetails,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 120),
-              decoration: BoxDecoration(
-                color: AppColors.lightGreen,
-                borderRadius: BorderRadius.circular(8),
-              ),
+      child: Form(
+        key: formKey,
+        child: Column(
+          children: <Widget>[
+            Container(
               padding: const EdgeInsets.symmetric(vertical: 5),
-              width: double.infinity,
-              alignment: Alignment.center,
-              child: const Text(
-                'Scan Card',
-                style: TextStyle(
-                  color: AppColors.persianBlue,
-                  fontFamily: 'halter',
-                  fontSize: 14,
-                  package: 'flutter_credit_card',
+              margin: const EdgeInsets.only(left: 16, right: 16),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Card number',
+                  hintText: 'XXXX XXXX XXXX XXXX',
                 ),
+                controller: _cardNumberController,
+                obscureText: true,
+                keyboardType: TextInputType.text,
+                validator: (value) {
+                  if (value == null || value.isEmpty || value.length < 16) {
+                    return 'Please enter card number';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  setState(() {
+                    cardNumber = value;
+                  });
+                },
               ),
             ),
-          ),
-          GestureDetector(
-            onTap: _onValidate,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppColors.lightGreen,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              width: double.infinity,
-              alignment: Alignment.center,
-              child: const Text(
-                'Save',
-                style: TextStyle(
-                  color: AppColors.persianBlue,
-                  fontFamily: 'halter',
-                  fontSize: 14,
-                  package: 'flutter_credit_card',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    margin: const EdgeInsets.only(left: 16, right: 16),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Expired Date',
+                        hintText: 'MM/YY',
+                      ),
+                      controller: _expiryDateController,
+                      keyboardType: TextInputType.datetime,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter expiry date';
+                        }
+                        final DateTime now = DateTime.now();
+                        final List<String> date = value.split(RegExp(r'/'));
+                        final int month = int.parse(date.first);
+                        final int year = int.parse('20${date.last}');
+                        final int lastDayOfMonth = month < 12
+                            ? DateTime(year, month + 1, 0).day
+                            : DateTime(year + 1, 1, 0).day;
+                        final DateTime cardDate = DateTime(
+                          year,
+                          month,
+                          lastDayOfMonth,
+                          23,
+                          59,
+                          59,
+                          999,
+                        );
+
+                        if (cardDate.isBefore(now) ||
+                            month > 12 ||
+                            month == 0) {
+                          return 'Please input a valid date';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        String expiry = value ?? "";
+                        if (expiry.startsWith(RegExp('[2-9]'))) {
+                          expiry = '0$expiry';
+                        }
+                        setState(() {
+                          capturedExpiryDate = expiry;
+                        });
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () async => uiService.showConfirmPopup(
-              context,
-              "Are you sure?",
-              "Are you sure you want to discard this new Secure Card?",
-              "Discard",
-              popTwice: true,
-            ),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.red[300],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              width: double.infinity,
-              alignment: Alignment.center,
-              child: const Text(
-                'Discard',
-                style: TextStyle(
-                  color: AppColors.persianBlue,
-                  fontFamily: 'halter',
-                  fontSize: 14,
-                  package: 'flutter_credit_card',
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    margin: const EdgeInsets.only(left: 16, right: 16),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'CVV',
+                        hintText: 'XXX',
+                      ),
+                      controller: _cvvCodeController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter CVV';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          cvvCode = value;
+                        });
+                      },
+                    ),
+                  ),
                 ),
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              margin: const EdgeInsets.only(left: 16, right: 16),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Card Holder Name',
+                ),
+                controller: _cardHolderNameController,
+                onChanged: (value) {
+                  setState(() {
+                    cardHolderName = value;
+                  });
+                },
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _onValidate,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              child: const Text('Save'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: scanCardDetails,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.mint,
+                  ),
+                  child: const Text('Scan Card'),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(
+                    left: 10,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async => uiService.showConfirmPopup(
+                    context,
+                    "Are you sure?",
+                    "Are you sure you want to discard this new Secure Card?",
+                    "Discard",
+                    popTwice: true,
+                  ),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  child: const Text('Discard'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
