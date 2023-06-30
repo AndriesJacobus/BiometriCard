@@ -1,6 +1,5 @@
-import 'package:biometricard/mixins/secure_storage_mixin.dart';
-import 'package:biometricard/services/ui_service.dart';
 import 'package:flutter/material.dart';
+import 'package:biometricard/mixins/secure_storage_mixin.dart';
 import 'package:biometricard/common/colors.dart';
 import 'package:biometricard/models/menu_item.dart';
 import 'package:biometricard/components/menu_items.dart';

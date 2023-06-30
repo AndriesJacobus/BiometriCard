@@ -1,6 +1,5 @@
-import 'package:biometricard/components/blacklisted_country.dart';
-import 'package:biometricard/models/country.dart';
 import 'package:flutter/material.dart';
+import 'package:biometricard/components/blacklisted_country.dart';
 import 'package:biometricard/components/new_blacklisted_country.dart';
 import 'package:biometricard/services/local_auth_service.dart';
 import 'package:biometricard/common/colors.dart';

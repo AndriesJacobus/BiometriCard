@@ -38,7 +38,7 @@ These are also stored in Secure Storage.
 Users can scan cards though the app instead of entering the details manually!
 (Not supported on simulators)
 
-## BiometriCard Cool Tech Specification
+## BiometriCard Cool Tech
 Mixins, models, and more!
 
 ## Geting the Project Started

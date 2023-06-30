@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class INNEntry {
   // iin_start, country, bank_name, bank_url, bank_city
   final String inn;

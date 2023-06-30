@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/services.dart';
-import 'package:biometricard/models/iNNEntry.dart';
+import 'package:biometricard/models/i_n_n_entry.dart';
 
 class CardCountries {
   // Load countries from csv

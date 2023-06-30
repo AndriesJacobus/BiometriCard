@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:biometricard/models/country.dart';
-import 'package:biometricard/models/iNNEntry.dart';
+import 'package:biometricard/models/i_n_n_entry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:biometricard/models/secure_card.dart';
@@ -203,7 +203,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
 
       // Add card details and remove
       setState(() {
-        cardNumber = cardDetails!.cardNumber;
+        cardNumber = cardDetails.cardNumber;
         capturedExpiryDate = cardDetails.expiryDate;
         cardHolderName = cardDetails.cardHolderName;
       });

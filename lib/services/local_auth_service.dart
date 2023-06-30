@@ -18,7 +18,7 @@ class LocalAuthService {
   Future<AuthStatus> authenticateLocally() async {
     if (await canAuthenticate() == AuthStatus.success) {
       try {
-        final bool didAuthenticate = await auth!.authenticate(
+        final bool didAuthenticate = await auth.authenticate(
           localizedReason: 'Please authenticate to manage your Secure Cards',
         );
 
