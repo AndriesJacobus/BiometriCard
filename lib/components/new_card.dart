@@ -195,6 +195,12 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
         ),
       );
 
+      debugPrint("Card details: ${cardDetails.toString()}");
+
+      _cardNumberController.text = cardDetails!.cardNumber;
+      _expiryDateController.text = cardDetails.expiryDate;
+      _cardHolderNameController.text = cardDetails.cardHolderName;
+
       // Add card details and remove
       setState(() {
         cardNumber = cardDetails!.cardNumber;
