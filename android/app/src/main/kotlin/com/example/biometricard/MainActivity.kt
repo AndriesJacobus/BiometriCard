@@ -1,4 +1,4 @@
-package com.example.biometricard
+package com.ivy.biometricard
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

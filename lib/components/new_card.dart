@@ -165,7 +165,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
       // Save card to secure storage
       bool saveSuccess = await secureStorage.saveAndStoreCard(
         SecureCard(
-          number: cardNumber,
+          number: cardNumber.replaceAll(" ", ""),
           expiryDate: capturedExpiryDate,
           cVV: cvvCode,
           holder: cardHolderName,
