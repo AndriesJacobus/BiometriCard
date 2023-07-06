@@ -15,4 +15,12 @@ class AppColors {
   static const Color mint = Color(0xff40C9A2);
   static const Color persianGreen = Color(0xff2F9C95);
   static const Color persianBlue = Color(0xff153243);
+
+  static const String pGreen = "#2F9C95";
+  static const String pBlue = "#153243";
+  static const String jet = "#363537";
+  static const String dye = "#284B63";
+  static const String royal = "#7E52A0";
+  static const String cyan = "#57A773";
+  static const String spearMint = "#40C9A2";
 }

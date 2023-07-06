@@ -1,3 +1,4 @@
+import 'package:biometricard/common/hex_color.dart';
 import 'package:biometricard/components/icon_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/common/colors.dart';
@@ -106,7 +107,8 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
               obscureCardNumber: isCardUnlocked!,
               obscureCardCvv: isCardUnlocked!,
               isHolderNameVisible: true,
-              cardBgColor: AppColors.cardBgColor,
+              cardBgColor: HexColor.fromHex(widget.card.colorHex!),
+              // cardBgColor: AppColors.cardBgColor,
               isSwipeGestureEnabled: true,
               onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
             ),

@@ -1,3 +1,4 @@
+import 'package:biometricard/common/hex_color.dart';
 import 'package:flutter/material.dart';
 import 'package:biometricard/models/country.dart';
 import 'package:biometricard/models/i_n_n_entry.dart';
@@ -26,6 +27,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
   String cvvCode = '';
   String cardBankName = ' ';
   String cardType = '';
+  String cardColorHex = '#363636';
 
   bool isCvvFocused = false;
   bool useGlassMorphism = false;
@@ -175,6 +177,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
           type: "",
           dateAdded: DateTime.now().toString().split(".")[0],
           bankName: cardBankName.isNotEmpty ? cardBankName : ' ',
+          colorHex: cardColorHex.isNotEmpty ? cardColorHex : '#363636',
         ),
       );
 
@@ -233,13 +236,48 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
     });
   }
 
+  Widget colorTack(String colorHex) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          cardColorHex = colorHex;
+        });
+      },
+      child: Container(
+        height: 20,
+        width: 20,
+        margin: const EdgeInsets.only(
+          left: 5,
+          right: 5,
+        ),
+        decoration: BoxDecoration(
+          color: HexColor.fromHex(colorHex),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(20),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget renderCardForm() {
     return Form(
       key: formKey,
       child: Column(
         children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              colorTack(AppColors.jet),
+              colorTack(AppColors.pBlue),
+              colorTack(AppColors.dye),
+              colorTack(AppColors.royal),
+              colorTack(AppColors.pGreen),
+              colorTack(AppColors.spearMint),
+              colorTack(AppColors.cyan),
+            ],
+          ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 5),
             margin: const EdgeInsets.only(left: 16, right: 16),
             child: TextFormField(
               decoration: const InputDecoration(
@@ -508,7 +546,8 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
             obscureCardNumber: true,
             obscureCardCvv: true,
             isHolderNameVisible: true,
-            cardBgColor: AppColors.cardBgColor,
+            // cardBgColor: AppColors.cardBgColor,
+            cardBgColor: HexColor.fromHex(cardColorHex),
             isSwipeGestureEnabled: true,
             onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
           ),
