@@ -8,6 +8,7 @@ class SecureCard {
   String type;
   String? country;
   String? dateAdded;
+  String? bankName;
 
   SecureCard({
     required this.number,
@@ -17,6 +18,7 @@ class SecureCard {
     required this.type,
     this.country,
     this.dateAdded,
+    this.bankName,
   });
 
   factory SecureCard.fromJson(Map<String, dynamic> jsonData) {
@@ -28,6 +30,7 @@ class SecureCard {
       type: jsonData['type'] ?? "N/A",
       country: jsonData['country'] ?? "N/A",
       dateAdded: jsonData['dateAdded'] ?? "N/A",
+      bankName: jsonData['bankName'] ?? "N/A",
     );
   }
 
@@ -39,6 +42,7 @@ class SecureCard {
         'type': model.type,
         'country': model.country ?? "N/A",
         'dateAdded': model.dateAdded ?? "N/A",
+        'bankName': model.bankName ?? "N/A",
       };
 
   static String serialize(SecureCard card) =>
@@ -47,10 +51,3 @@ class SecureCard {
   static SecureCard deserialize(String json) =>
       SecureCard.fromJson(jsonDecode(json));
 }
-
-// Usage:
-// final FlutterSecureStorage storage = FlutterSecureStorage();
-
-// await storage.write(key: key, value: MyUserModel.serialize(model));
-
-// MyUserModel model = MyUserModel.deserialize(await storage.read(key: key));

@@ -11,7 +11,7 @@ class LocalAuthService {
     bool authenticateSupported =
         canAuthenticateWithBiometrics || await auth.isDeviceSupported();
 
-    debugPrint("authenticateSupported: $authenticateSupported");
+    // debugPrint("authenticateSupported: $authenticateSupported");
     return authenticateSupported ? AuthStatus.success : AuthStatus.unsupported;
   }
 
@@ -22,7 +22,7 @@ class LocalAuthService {
           localizedReason: 'Please authenticate to manage your Secure Cards',
         );
 
-        debugPrint("didAuthenticate: $didAuthenticate");
+        // debugPrint("didAuthenticate: $didAuthenticate");
         return didAuthenticate ? AuthStatus.success : AuthStatus.fail;
       } on PlatformException catch (e) {
         debugPrint("Error authenticating:");

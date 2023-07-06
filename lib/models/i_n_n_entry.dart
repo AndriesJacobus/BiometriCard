@@ -16,6 +16,17 @@ class INNEntry {
 
   @override
   String toString() {
-    return country;
+    String ret = "INN Number: $inn\nCountry: $country";
+    if (bankName != null) {
+      ret += "\nBank: $bankName";
+    }
+    if (bankUrl != null) {
+      ret += "\nBank Url: $bankUrl";
+    }
+    if (bankUrl != null) {
+      ret += "\nBank City: $bankCity";
+    }
+
+    return ret;
   }
 }

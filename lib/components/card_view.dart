@@ -98,7 +98,8 @@ class CardViewState extends State<CardView> with SecureStorage<CardView> {
               expiryDate: widget.card.expiryDate,
               cardHolderName: widget.card.holder,
               cvvCode: widget.card.cVV,
-              // bankName: widget.card.bankName,
+              bankName:
+                  widget.card.bankName == "N/A" ? ' ' : widget.card.bankName,
               frontCardBorder: null,
               backCardBorder: null,
               showBackView: isCvvFocused,

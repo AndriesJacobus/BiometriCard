@@ -24,7 +24,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
   String capturedExpiryDate = '';
   String cardHolderName = '';
   String cvvCode = '';
-  String bankName = ' ';
+  String cardBankName = ' ';
   String cardType = '';
 
   bool isCvvFocused = false;
@@ -40,10 +40,11 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
       MaskedTextController(mask: '0000 0000 0000 0000');
   final TextEditingController _expiryDateController =
       MaskedTextController(mask: '00/00');
-  final TextEditingController _cardHolderNameController =
-      TextEditingController();
   final TextEditingController _cvvCodeController =
       MaskedTextController(mask: '0000');
+  final TextEditingController _cardHolderNameController =
+      TextEditingController();
+  final TextEditingController _bankNameController = TextEditingController();
 
   @override
   void initState() {
@@ -146,8 +147,10 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
       INNEntry? innEntry = cardCountries
           .getCardDataForInn(cardNumber.replaceAll(" ", "").substring(0, 6));
 
+      debugPrint("iNNEntry:");
+      debugPrint(innEntry.toString());
+
       if (innEntry != null) {
-        // debugPrint("innEntry code: ${innEntry.toString()}");
         // Make sure blacklist doesn't include country with innEntry's code
         bool blacklisted = secureStorage.countryBlacklisted(
           Country(
@@ -171,6 +174,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
           holder: cardHolderName,
           type: "",
           dateAdded: DateTime.now().toString().split(".")[0],
+          bankName: cardBankName.isNotEmpty ? cardBankName : ' ',
         ),
       );
 
@@ -222,6 +226,13 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
     }
   }
 
+  void clearBankName() {
+    _bankNameController.text = " ";
+    setState(() {
+      cardBankName = ' ';
+    });
+  }
+
   Widget renderCardForm() {
     return Form(
       key: formKey,
@@ -232,7 +243,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
             margin: const EdgeInsets.only(left: 16, right: 16),
             child: TextFormField(
               decoration: const InputDecoration(
-                labelText: 'Card number',
+                labelText: 'Card number *',
                 hintText: 'XXXX XXXX XXXX XXXX',
               ),
               controller: _cardNumberController,
@@ -245,6 +256,31 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
                 return null;
               },
               onChanged: (value) {
+                // Get Bank Name
+                if (value.length > 6) {
+                  INNEntry? innEntry = cardCountries.getCardDataForInn(
+                      value.replaceAll(" ", "").substring(0, 6));
+
+                  debugPrint("iNNEntry:");
+                  debugPrint(innEntry.toString());
+
+                  if (innEntry != null) {
+                    // Check if we can't get data from INN Entry
+                    if (innEntry.bankName != null) {
+                      _bankNameController.text = innEntry.bankName!;
+                      setState(() {
+                        cardBankName = innEntry.bankName!;
+                      });
+                    } else {
+                      clearBankName();
+                    }
+                  } else {
+                    clearBankName();
+                  }
+                } else {
+                  clearBankName();
+                }
+
                 setState(() {
                   cardNumber = value;
                 });
@@ -266,7 +302,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
                   margin: const EdgeInsets.only(left: 16, right: 16),
                   child: TextFormField(
                     decoration: const InputDecoration(
-                      labelText: 'Expired Date',
+                      labelText: 'Expired Date *',
                       hintText: 'MM/YY',
                     ),
                     controller: _expiryDateController,
@@ -320,7 +356,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
                   margin: const EdgeInsets.only(left: 16, right: 16),
                   child: TextFormField(
                     decoration: const InputDecoration(
-                      labelText: 'CVV',
+                      labelText: 'CVV *',
                       hintText: 'XXX',
                     ),
                     controller: _cvvCodeController,
@@ -362,6 +398,26 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
               onChanged: (value) {
                 setState(() {
                   cardHolderName = value;
+                });
+              },
+              onTap: () {
+                setState(() {
+                  isCvvFocused = false;
+                });
+              },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            margin: const EdgeInsets.only(left: 16, right: 16),
+            child: TextFormField(
+              decoration: const InputDecoration(
+                labelText: 'Bank Name',
+              ),
+              controller: _bankNameController,
+              onChanged: (value) {
+                setState(() {
+                  cardBankName = value.isEmpty ? ' ' : value;
                 });
               },
               onTap: () {
@@ -441,7 +497,7 @@ class NewCardState extends State<NewCard> with SecureStorage<NewCard> {
             expiryDate: capturedExpiryDate,
             cardHolderName: cardHolderName,
             cvvCode: cvvCode,
-            bankName: bankName,
+            bankName: cardBankName,
             frontCardBorder: !useGlassMorphism
                 ? Border.all(color: AppColors.lightGreen)
                 : null,
